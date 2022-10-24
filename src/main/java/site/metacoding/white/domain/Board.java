@@ -2,9 +2,11 @@ package site.metacoding.white.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -19,5 +21,8 @@ public class Board { // 자바코드로 테이블을 자동 생성
   private String title;
   @Column(length = 1000)
   private String content;
-  private String author;
+
+  // FK가 만들어짐 .user_id
+  @ManyToOne(fetch = FetchType.EAGER)
+  private User user;
 }
