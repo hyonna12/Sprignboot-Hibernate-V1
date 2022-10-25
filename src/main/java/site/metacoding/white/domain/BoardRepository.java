@@ -14,10 +14,10 @@ public class BoardRepository {
 
   private final EntityManager em;
   // preparedsatement와 같은 역할
-  // db에서 들고온 다른 오브젝트를 자바 오브젝트로 바꿔줌
+  // db에서 들고온 다른 오브젝트를 자바 오브 젝트로 바꿔줌
   // preparestatement와는 다르게 object로 매핑해줌, hibernate 기술
 
-  public void save(Board board) {
+  public Board save(Board board) {
     em.persist(board);
     // 영속화, insert 됨
     // db에 쿼리를 전송
@@ -29,6 +29,7 @@ public class BoardRepository {
     // .setParameter("content", board.getContent())
     // .setParameter("author", board.getAuthor())
     // .executeUpdate();
+    return board;
   }
   // 인터페이스가 아니라서 형태가 있어야함
 

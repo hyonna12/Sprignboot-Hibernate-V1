@@ -8,10 +8,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
-@Setter
+@NoArgsConstructor
 @Getter
 @Entity
 public class Board { // 자바코드로 테이블을 자동 생성
@@ -25,4 +26,18 @@ public class Board { // 자바코드로 테이블을 자동 생성
   // FK가 만들어짐 .user_id
   @ManyToOne(fetch = FetchType.EAGER)
   private User user;
+
+  @Builder
+  public Board(Long id, String title, String content, User user) {
+    this.id = id;
+    this.title = title;
+    this.content = content;
+    this.user = user;
+  }
+
+  public void update(String title, String content) {
+    this.title = title;
+    this.content = content;
+  }
+
 }

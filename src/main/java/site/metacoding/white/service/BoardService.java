@@ -8,7 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import site.metacoding.white.domain.Board;
 import site.metacoding.white.domain.BoardRepository;
+import site.metacoding.white.domain.UserRepository;
 import site.metacoding.white.dto.BoardReqDto.BoardSaveReqDto;
+import site.metacoding.white.dto.BoardRespDto.BoardSaveRespDto;
 
 @RequiredArgsConstructor
 @Service
@@ -20,17 +22,17 @@ public class BoardService {
   private final BoardRepository boardRepository;
 
   @Transactional
-  public void save(BoardSaveReqDto boardSaveReqDto) {
-    Board board = new Board();
-    board.setTitle(boardSaveReqDto.getTitle());
-    board.setContent(boardSaveReqDto.getContent());
-    board.setUser(boardSaveReqDto.getUser());
-    // controller한테 board받음
-    boardRepository.save(board);
-    // 받아서 repository의 save 호출
+  public BoardSaveRespDto save(BoardSaveReqDto boardSaveReqDto) {
+    // 핵심로직 // dto 받아서 entity로 바꿔서 db에 save
+    // select해서 db에서 조회해서 영속화된 유저객체
+    Board boardPS = boardRepository.save(boardSaveReqDto.toEntity());
+
+    // DTO 전환 // db에서 entity로 받은걸 dto로 바꿔서 응답
+    BoardSaveRespDto boardSaveRespDto = new BoardSaveRespDto(boardPS);
+    return boardSaveRespDto;
   }
 
-  @Transactional(readOnly = true)
+  @Transactional(readOnly = true) // 트랜잭션을 걸면 OSIV가 false여도 디비 커넥션이 유지됨.
   public Board findById(Long id) {
     Board boardPS = boardRepository.findById(id); // 오픈 인뷰가 false니까 조회후 세션 종료
     boardPS.getUser().getUsername(); // Lazy 로딩됨. (근데 Eager이면 이미 로딩되서 select 두번
@@ -43,8 +45,7 @@ public class BoardService {
   public void update(Long id, Board board) { // 클라이언트한테 넘겨받은 데이터
     Board boardPS = boardRepository.findById(id); // db에서 조회한 데이터
     // db에서 pc 거쳤으니까 영속화
-    boardPS.setTitle(board.getTitle());
-    boardPS.setContent(board.getContent());
+    boardPS.update(board.getTitle(), board.getContent());
     // 영속화된 데이터를 클라이언트한테 받은 데이터로 수정
     // 영속화를 시키고 트랜잭션 종료되면 자동으로 flush 됨
   }// 트랜잭션 종료시 -> 더티체킹을 함
