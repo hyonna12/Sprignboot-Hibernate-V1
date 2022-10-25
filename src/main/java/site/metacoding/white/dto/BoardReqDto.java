@@ -8,7 +8,7 @@ public class BoardReqDto {
 
   @Setter
   @Getter
-  public static class BoardSaveDto {
+  public static class BoardSaveReqDto {
     private String title;
     private String content;
     private User user;

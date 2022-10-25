@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import site.metacoding.white.domain.Board;
 import site.metacoding.white.domain.User;
-import site.metacoding.white.dto.BoardReqDto.BoardSaveDto;
+import site.metacoding.white.dto.BoardReqDto.BoardSaveReqDto;
 import site.metacoding.white.service.BoardService;
 
 @RequiredArgsConstructor
@@ -37,13 +37,13 @@ public class BoardApiController {
     return "ok";
   }
 
-  @PostMapping("/v2/board")
-  public String saveV2(@RequestBody BoardSaveDto boardSaveDto) {
+  @PostMapping("/board")
+  public String saveV2(@RequestBody BoardSaveReqDto boardSaveReqDto) {
     // 세션 정보를 들고옴
     User principal = (User) session.getAttribute("principal");
     // insert into board(title, content, user_id) values(?, ?, ?)
-    boardSaveDto.setUser(principal);
-    boardService.save(boardSaveDto);
+    boardSaveReqDto.setUser(principal);
+    boardService.save(boardSaveReqDto); // 서비스에는 단 하나의 객체만 전달한다.
     // 받아서 service의 save 호출하고
     return "ok";
     // 잘되면 ok
@@ -51,7 +51,7 @@ public class BoardApiController {
 
   @GetMapping("/board/{id}")
   public Board findById(@PathVariable Long id) {
-    return boardService.findById(id);
+    return boardService.findById(id); // Entity -> JSON 변경 (MessageConverter)
   }
 
   @GetMapping("/board")
@@ -65,15 +65,6 @@ public class BoardApiController {
     boardService.update(id, board);
     return "ok";
   }
-
-  // @PostMapping("/board")
-  // public String save(@RequestBody Board board) {
-  // // 사용자한테 json타입의 board 받음
-  // boardService.save(board);
-  // // 받아서 service의 save 호출하고
-  // return "ok";
-  // // 잘되면 ok
-  // }
 
   @DeleteMapping("/board/{id}")
   public String deleteById(@PathVariable Long id) {
