@@ -37,7 +37,8 @@ public class BoardRepository {
   public Optional<Board> findById(Long id) {
     try {
       Optional<Board> boardOP = Optional.of(em
-          .createQuery("select b from Board b where b.id = :id", Board.class) // board 타입으로 받을거임
+          .createQuery("select b from Board b join fetch b.user u join fetch b.comments c where b.id = :id",
+              Board.class) // board 타입으로 받을거임
           .setParameter("id", id)
           .getSingleResult()); // 한건보기
       // entity 조회 쿼리, jpql
