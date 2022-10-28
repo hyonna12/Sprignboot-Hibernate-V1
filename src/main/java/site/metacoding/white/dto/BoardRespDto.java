@@ -5,12 +5,14 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import site.metacoding.white.domain.Board;
 import site.metacoding.white.domain.Comment;
 import site.metacoding.white.domain.User;
 
 public class BoardRespDto {
 
+  @ToString
   @Setter
   @Getter
   public static class BoardSaveRespDto {
@@ -99,10 +101,10 @@ public class BoardRespDto {
       // for 문 돌려서 넣어야함!
 
       for (Comment c : board.getComments()) {
-        this.comments.add(new CommentDto(c));
+        comments.add(new CommentDto(c));
       }
 
-      // this.comment = board.getComments().stream().map((comment) -> new
+      // this.comments = board.getComments().stream().map((comment) -> new
       // CommentDto(comment))
       // .collect(Collectors.toList());
     }
