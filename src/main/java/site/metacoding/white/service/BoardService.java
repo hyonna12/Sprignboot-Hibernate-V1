@@ -72,13 +72,15 @@ public class BoardService {
   }// 트랜잭션 종료시 -> 더티체킹을 함
 
   @Transactional
-  public void deleteById(Long id) {
+  public void deleteById(Long id, Long userId) {
     Optional<Board> boardOP = boardRepository.findById(id);
+
     if (boardOP.isPresent()) {
-      boardRepository.deleteById(id);
-    } else {
-      throw new RuntimeException("해당 " + id + "로 삭제를 할 수 없습니다.");
+      Board boardPS = boardOP.get();
+      if (boardPS.getUser().getId() != userId)
+        throw new RuntimeException("해당 게시글을 삭제할 권한이 없습니다.");
     }
+    boardRepository.deleteById(id);
   }
 
   @Transactional(readOnly = true)

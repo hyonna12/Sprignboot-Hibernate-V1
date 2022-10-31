@@ -37,13 +37,10 @@ public class BoardApiController {
   // return "ok";
   // }
 
-  @PostMapping("/board")
-  public ResponseDto<?> saveV2(@RequestBody BoardSaveReqDto boardSaveReqDto) {
+  @PostMapping("/s/board")
+  public ResponseDto<?> save(@RequestBody BoardSaveReqDto boardSaveReqDto) {
     // 세션 정보를 들고옴
     SessionUser sessionUser = (SessionUser) session.getAttribute("sessionUser");
-    if (sessionUser == null) {
-      throw new RuntimeException("로그인이 필요합니다.");
-    }
     // insert into board(title, content, user_id) values(?, ?, ?)
     boardSaveReqDto.setSessionUser(sessionUser);
     BoardSaveRespDto boardSaveRespDto = boardService.save(boardSaveReqDto); // 서비스에는 단 하나의 객체만 전달한다.
@@ -63,24 +60,17 @@ public class BoardApiController {
     return new ResponseDto<>(1, "성공", boardService.findAll());
   }
 
-  @PutMapping("/board/{id}")
+  @PutMapping("/s/board/{id}")
   public ResponseDto<?> update(@PathVariable Long id, @RequestBody BoardUpdateReqDto boardUpdateReqDto) {
     SessionUser sessionUser = (SessionUser) session.getAttribute("sessionUser");
-    if (sessionUser == null) {
-      throw new RuntimeException("로그인이 필요합니다.");
-    }
-    // id 따로 주소로 받으니까 board에는 id 받으면 안됨 / board 말고 필요한 데이터만 받아야됨 dto
     boardUpdateReqDto.setId(id);
     return new ResponseDto<>(1, "성공", boardService.update(boardUpdateReqDto));
   }
 
-  @DeleteMapping("/board/{id}")
+  @DeleteMapping("/s/board/{id}")
   public ResponseDto<?> deleteById(@PathVariable Long id) {
     SessionUser sessionUser = (SessionUser) session.getAttribute("sessionUser");
-    if (sessionUser == null) {
-      throw new RuntimeException("로그인이 필요합니다.");
-    }
-    boardService.deleteById(id);
+    boardService.deleteById(id, sessionUser.getId());
     return new ResponseDto<>(1, "성공", null);
   }
 

@@ -1,5 +1,8 @@
 package site.metacoding.white.web;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +15,6 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -108,13 +109,13 @@ public class UserApiControllerTest {
 
     // when
     ResultActions resultActions = mvc
-        .perform(MockMvcRequestBuilders.post("/join").content(body)
+        .perform(post("/join").content(body)
             .contentType(APPLICATION_JSON).accept(APPLICATION_JSON));
 
     // then
     MvcResult mvcResult = resultActions.andReturn();
     System.out.println("디버그 : " + mvcResult.getResponse().getContentAsString());
-    resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.code").value(1L));
+    resultActions.andExpect(jsonPath("$.code").value(1L));
   }
 
   @Test
@@ -127,13 +128,13 @@ public class UserApiControllerTest {
 
     // when
     ResultActions resultActions = mvc
-        .perform(MockMvcRequestBuilders.post("/login").content(body)
+        .perform(post("/login").content(body)
             .contentType(APPLICATION_JSON).accept(APPLICATION_JSON));
 
     // then
     MvcResult mvcResult = resultActions.andReturn();
     System.out.println("디버그 : " + mvcResult.getResponse().getContentAsString());
-    resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.code").value(1L));
+    resultActions.andExpect(jsonPath("$.code").value(1L));
   }
 
 }
